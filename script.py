@@ -31,7 +31,7 @@ def parse_metadata(url: str) -> Dict:
     }
 
 
-def make_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
+def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
     if os.path.exists(out_dir):
         dir_name = problem_number + "_" + problem_name.lower().replace(" ", "_")
         new_path = os.path.join(out_dir, dir_name)
@@ -54,7 +54,7 @@ def output_meta_file(out_dir: str, data: Dict) -> None:
         json.dump(data, f, indent=4)
 
 def output_problem_file(out_dir: str, problem: str) -> None:
-    
+    with open(os.path.join(out_dir, ))
 
 
 args = parseArgs()
