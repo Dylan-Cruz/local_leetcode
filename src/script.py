@@ -2,6 +2,13 @@ import json
 from typing import Dict
 import argparse
 import os
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.chrome.service import Service
+import time
+
+from leetcode_problem import LeetcodeProblem
 
 
 def parseArgs() -> argparse.Namespace:
@@ -20,12 +27,13 @@ def parseArgs() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def load_page(url: str) -> None:
-
-    print(f"Loading problem with URL: {args.url}")
-
-    print("Problem loaded.")
-    return page
+def scrape_problem_data() -> Dict:
+    chrome_options = Options()
+    # chrome_options.add_argument("--headless")
+    with webdriver.Chrome(options=chrome_options) as browser:
+        page = LeetcodeProblem(browser, args.url)
+        page.load()
+        return page.parse_page()
 
 
 def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
@@ -46,7 +54,7 @@ def output_write_up_file(out_dir: str) -> None:
         f.write("## Space Complexity\n")
 
 
-def output_meta_file(out_dir: str, page: BeautifulSoup) -> None:
+def output_meta_file(out_dir: str) -> None:
     data = {
         "name": "Group Anagrams",
         "number": "49",
@@ -60,23 +68,24 @@ def output_meta_file(out_dir: str, page: BeautifulSoup) -> None:
         json.dump(data, f, indent=4)
 
 
-def output_problem_file(out_dir: str, page: BeautifulSoup) -> None:
+def output_problem_file(out_dir: str) -> None:
 
     # create the problem.md file
     with open(os.path.join(out_dir, "problem.md"), "w", encoding="utf-8") as f:
         f.write("# 32 Whatever Crap")
 
 
-def output_solution_file(out_dir: str, page: BeautifulSoup) -> None:
+def output_solution_file(out_dir: str) -> None:
 
     # create the solution.py file
     with open(os.path.join(out_dir, "solution.py"), "w", encoding="utf-8") as f:
         f.write("Solution Stub")
 
 
+# gather our command line arguments
 args = parseArgs()
-page = load_page(args.url)
-meta_data = parse_meta_data(page)
+problem_data = scrape_problem_data()
+
 # path = make_dir(args.out_dir, problem_meta_data["number"], problem_meta_data["name"])
 # output_write_up_file(path)
 # output_meta_file(path, problem_meta_data)
