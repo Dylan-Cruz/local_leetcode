@@ -1,8 +1,9 @@
 import json
 from typing import Dict
-from bs4 import BeautifulSoup
 import argparse
 import os
+from bs4 import BeautifulSoup
+import requests
 
 
 def parseArgs() -> argparse.Namespace:
@@ -21,14 +22,25 @@ def parseArgs() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def parse_metadata(url: str) -> Dict:
-    return {
-        "name": "Group Anagrams",
-        "number": "49",
-        "url": "https://leetcode.com/problems/group-anagrams/description/",
-        "difficulty": "Medium",
-        "topics": ["Array", "Hash Table", "String", "Sorting"],
-    }
+def load_page(url: str) -> BeautifulSoup:
+    print(f"Loading problem with URL: {args.url}")
+    response = requests.get(args.url, timeout=5)
+    page = BeautifulSoup(response.text, "html.parser")
+    print("Problem loaded.")
+    return page
+
+
+def parse_meta_data(page: BeautifulSoup) -> Dict:
+
+    return {}
+
+
+def parse_problem(page: BeautifulSoup) -> Dict:
+    pass
+
+
+def parse_solution(page: BeautifulSoup) -> Dict:
+    pass
 
 
 def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
@@ -43,22 +55,45 @@ def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> st
 
 def output_write_up_file(out_dir: str) -> None:
     with open(os.path.join(out_dir, "write_up.md"), "w", encoding="utf-8") as f:
-        f.write("# Write Up\n")
-        f.write("## Approach\n")
-        f.write("## Time Complexity\n")
+        f.write("# Write Up\n\n")
+        f.write("## Approach\n\n")
+        f.write("## Time Complexity\n\n")
         f.write("## Space Complexity\n")
 
 
-def output_meta_file(out_dir: str, data: Dict) -> None:
+def output_meta_file(out_dir: str, page: BeautifulSoup) -> None:
+    data = {
+        "name": "Group Anagrams",
+        "number": "49",
+        "url": "https://leetcode.com/problems/group-anagrams/description/",
+        "difficulty": "Medium",
+        "topics": ["Array", "Hash Table", "String", "Sorting"],
+    }
+
+    # create the meta.json file
     with open(os.path.join(out_dir, "meta.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, indent=4)
 
-def output_problem_file(out_dir: str, problem: str) -> None:
-    with open(os.path.join(out_dir, ))
+
+def output_problem_file(out_dir: str, page: BeautifulSoup) -> None:
+
+    # create the problem.md file
+    with open(os.path.join(out_dir, "problem.md"), "w", encoding="utf-8") as f:
+        f.write("# ")
+
+
+def output_solution_file(out_dir: str, page: BeautifulSoup) -> None:
+
+    # create the solution.py file
+    with open(os.path.join(out_dir, "solution.py"), "w", encoding="utf-8") as f:
+        f.write("Solution Stub")
 
 
 args = parseArgs()
-# problem_meta_data = parse_metadata("nowhere")
+page = load_page(args.url)
+meta_data = parse_meta_data(page)
 # path = make_dir(args.out_dir, problem_meta_data["number"], problem_meta_data["name"])
 # output_write_up_file(path)
 # output_meta_file(path, problem_meta_data)
+# output_problem_file(path, problem)
+# output_solution_file(path, solution)
