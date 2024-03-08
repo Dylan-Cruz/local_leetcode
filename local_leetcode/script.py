@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.service import Service
 import time
-from model import LeetcodeProblem
+from  page import LeetcodeProblem
 
 
 def parseArgs() -> argparse.Namespace:
@@ -30,6 +30,7 @@ def scrape_problem_data() -> Dict:
     chrome_options = Options()
     # chrome_options.add_argument("--headless")
     with webdriver.Chrome(options=chrome_options) as browser:
+        browser.implicitly_wait(5)
         page = LeetcodeProblem(browser, args.url)
         page.load()
         return page.parse()
