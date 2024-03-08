@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.service import Service
 import time
-from  page import LeetcodeProblem
+from page import LeetcodeProblem
 
 
 def parseArgs() -> argparse.Namespace:
@@ -85,6 +85,7 @@ def output_solution_file(out_dir: str) -> None:
 # gather our command line arguments
 args = parseArgs()
 problem_data = scrape_problem_data()
+print(problem_data)
 
 # path = make_dir(args.out_dir, problem_meta_data["number"], problem_meta_data["name"])
 # output_write_up_file(path)

@@ -1,7 +1,10 @@
 from typing import Dict
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from markdownify import markdownify as md
+
 
 class LeetcodeProblem:
     def __init__(self, driver: WebDriver, url: str):
@@ -11,6 +14,14 @@ class LeetcodeProblem:
     def load(self) -> None:
         print(f"Loading problem with URL: {self.url}")
         self.driver.get(self.url)
+        WebDriverWait(self.driver, 3).until(
+            EC.presence_of_element_located(
+                [
+                    By.CSS_SELECTOR,
+                    "div.text-title-large a",
+                ]
+            )
+        )
         print("Problem loaded.")
 
     def parse(self) -> Dict:
@@ -39,24 +50,45 @@ class LeetcodeProblem:
                 page_data["difficulty"] = elements[0].text
                 break
 
-        
-        # parse topics 
-        topic_elements = driver.find_elements(By.XPATH, "//a[@target='_blank' and contains(@href, '/tag')]")
+        # parse topics
+        topic_elements = driver.find_elements(
+            By.XPATH, "//a[@target='_blank' and contains(@href, '/tag')]"
+        )
         topics = [element.get_attribute("innerText") for element in topic_elements]
         page_data["topics"] = topics
 
-        # parse description div[data-track-load="description_content"]
+        # parse description into markdown
+        desc_root = driver.find_element(
+            By.CSS_SELECTOR, "div[data-track-load='description_content']"
+        )
+        desc_html = desc_root.get_attribute("innerHTML")
+        desc_markdown = md(desc_html)
+        page_data["description"] = desc_markdown
 
-        # parse solution stub 
-        driver.find_element(By.XPATH, "//div[@id='editor']//button[contains(text(), 'C++')]").click()
-        time.sleep(2)
-        driver.find_element(By.XPATH, "//div[@id='editor']//div[contains(text(), 'Python3')]").click()
-        time.sleep(2)
-        solution_lines = driver.find_elements(By.CSS_SELECTOR, "#editor div.monaco-scrollable-element div.view-line")
+        # parse solution stub
+        driver.find_element(
+            By.XPATH, "//div[@id='editor']//button[contains(text(), 'C++')]"
+        ).click()
+        driver.find_element(
+            By.XPATH, "//div[@id='editor']//div[contains(text(), 'Python3')]"
+        ).click()
+
+        WebDriverWait(driver, 3).until(
+            EC.text_to_be_present_in_element(
+                [
+                    By.CSS_SELECTOR,
+                    "#editor div.monaco-scrollable-element div.view-line",
+                ],
+                "class Solution:",
+            )
+        )
+        solution_lines = driver.find_elements(
+            By.CSS_SELECTOR, "#editor div.monaco-scrollable-element div.view-line"
+        )
         page_data["solution_stub"] = "\n".join([line.text for line in solution_lines])
 
-        print(page_data)
         return page_data
+
 
 # {
 #     "name": "Group Anagrams",
