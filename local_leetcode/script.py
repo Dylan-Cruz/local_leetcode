@@ -7,8 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.chrome.service import Service
 import time
-
-from leetcode_problem import LeetcodeProblem
+from model import LeetcodeProblem
 
 
 def parseArgs() -> argparse.Namespace:
@@ -33,7 +32,7 @@ def scrape_problem_data() -> Dict:
     with webdriver.Chrome(options=chrome_options) as browser:
         page = LeetcodeProblem(browser, args.url)
         page.load()
-        return page.parse_page()
+        return page.parse()
 
 
 def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
