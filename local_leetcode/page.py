@@ -62,8 +62,9 @@ class LeetcodeProblem:
             By.CSS_SELECTOR, "div[data-track-load='description_content']"
         )
         desc_html = desc_root.get_attribute("innerHTML")
+        page_data["description_html"] = desc_html
         desc_markdown = md(desc_html)
-        page_data["description"] = desc_markdown
+        page_data["description_markdown"] = desc_markdown
 
         # parse solution stub
         driver.find_element(
@@ -88,12 +89,3 @@ class LeetcodeProblem:
         page_data["solution_stub"] = "\n".join([line.text for line in solution_lines])
 
         return page_data
-
-
-# {
-#     "name": "Group Anagrams",
-#     "number": 49,
-#     "url": "https://leetcode.com/problems/group-anagrams/description/",
-#     "difficulty": "Medium",
-#     "topics": ["Array", "Hash Table", "String", "Sorting"],
-# }
