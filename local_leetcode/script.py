@@ -36,16 +36,6 @@ def scrape_problem_data() -> Dict:
         return page.parse()
 
 
-def make_project_dir(out_dir: str, problem_number: str, problem_name: str) -> str:
-    if os.path.exists(out_dir):
-        dir_name = problem_number + "_" + problem_name.lower().replace(" ", "_")
-        new_path = os.path.join(out_dir, dir_name)
-        os.mkdir(new_path)
-        return new_path
-
-    raise FileNotFoundError(f"The directory {out_dir} does not exist.")
-
-
 def output_write_up_file(out_dir: str) -> None:
     with open(os.path.join(out_dir, "write_up.md"), "w", encoding="utf-8") as f:
         f.write("# Write Up\n\n")
