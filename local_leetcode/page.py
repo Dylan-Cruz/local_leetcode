@@ -1,3 +1,4 @@
+import time
 from typing import Dict
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
@@ -74,18 +75,19 @@ class LeetcodeProblem:
             By.XPATH, "//div[@id='editor']//div[contains(text(), 'Python3')]"
         ).click()
 
-        WebDriverWait(driver, 3).until(
+        WebDriverWait(driver, 5).until(
             EC.text_to_be_present_in_element(
-                [
+                (
                     By.CSS_SELECTOR,
-                    "#editor div.monaco-scrollable-element div.view-line",
-                ],
+                    "#editor div.monaco-scrollable-element",
+                ),
                 "class Solution:",
             )
         )
-        solution_lines = driver.find_elements(
-            By.CSS_SELECTOR, "#editor div.monaco-scrollable-element div.view-line"
+
+        editor = driver.find_element(
+            By.CSS_SELECTOR, "#editor div.monaco-scrollable-element"
         )
-        page_data["solution_stub"] = "\n".join([line.text for line in solution_lines])
+        page_data["solution_stub"] = editor.text
 
         return page_data
