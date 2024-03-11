@@ -1,4 +1,3 @@
-import time
 from typing import Dict
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
