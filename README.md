@@ -16,6 +16,7 @@ There are four files generated:
 4. meta.json - a json file containing the scraped data for future processing
 
 ## Todo
+- handle cases where the class isn't named solution
 - make the browser headless
     - chrome headless gets blocked by cloudflare, try firefox
     - try undetected-chromedriver https://pypi.org/project/undetected-chromedriver/

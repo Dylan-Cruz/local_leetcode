@@ -1,10 +1,25 @@
-
+import os
 from typing import Dict
 import argparse
+from urllib.parse import urlparse
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from page import LeetcodeProblem
 from writer import Writer
+
+
+def valid_directory(path: str) -> str:
+    if os.path.isdir(path):
+        return path
+    raise argparse.ArgumentTypeError(f"{path} is not a directory.")
+
+
+def valid_url(url: str) -> str:
+    parsed_url = urlparse(url)
+    if bool(parsed_url.netloc):
+        return url
+    else:
+        raise argparse.ArgumentTypeError(f"{url} is not a valid URL.")
 
 
 def parseArgs() -> argparse.Namespace:
@@ -15,9 +30,11 @@ def parseArgs() -> argparse.Namespace:
 
     # Add the arguments
     parser.add_argument(
-        "url", type=str, help="The URL of the leetcode problem to scrape"
+        "url", type=valid_url, help="The URL of the leetcode problem to scrape"
     )
-    parser.add_argument("out_dir", type=str, help="The path to the output directory")
+    parser.add_argument(
+        "out_dir", type=valid_directory, help="The path to the output directory"
+    )
 
     # Parse the arguments
     return parser.parse_args()
