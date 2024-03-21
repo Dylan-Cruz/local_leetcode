@@ -6,7 +6,23 @@ from selenium.webdriver.support import expected_conditions as EC
 from markdownify import markdownify as md
 
 
-class LeetcodeProblem:
+EDITOR_TEXT_SELECTOR = (
+    By.CSS_SELECTOR,
+    "#editor div.editor-scrollable",
+)  # targets the solution stub text in the editor, not including line numbers
+
+LANGUAGE_BUTTON_SELECTOR = (
+    By.XPATH,
+    "//div[@id='editor']//button//*[name() = 'svg'][contains(@class, 'fa-chevron-down')]",
+)  # targets the chevron icon that triggers the language selection in the editor
+
+TARGET_LANGUAGE_SELECTOR = (
+    By.XPATH,
+    "//div[@id='editor']//div[contains(text(), '{target_language}')]",
+)  # targets a button in the language selection pop over with the text of the target language. must call format passing the desired language
+
+
+class LeetcodeProblemPage:
     def __init__(self, driver: WebDriver, url: str):
         self.driver = driver
         self.url = url
@@ -67,22 +83,7 @@ class LeetcodeProblem:
         page_data["description_markdown"] = desc_markdown
 
         # parse solution stub
-        driver.find_element(
-            By.XPATH, "//div[@id='editor']//button[contains(text(), 'C++')]"
-        ).click()
-        driver.find_element(
-            By.XPATH, "//div[@id='editor']//div[contains(text(), 'Python3')]"
-        ).click()
-
-        WebDriverWait(driver, 5).until(
-            EC.text_to_be_present_in_element(
-                (
-                    By.CSS_SELECTOR,
-                    "#editor div.monaco-scrollable-element",
-                ),
-                "class Solution:",
-            )
-        )
+        self.select_language("Python3")
 
         editor = driver.find_element(
             By.CSS_SELECTOR, "#editor div.monaco-scrollable-element"
@@ -90,3 +91,33 @@ class LeetcodeProblem:
         page_data["solution_stub"] = editor.text
 
         return page_data
+
+    def select_language(self, language: str) -> None:
+        """
+        Selects the specified programming language in the editor.
+        Note that it must be different than the value previsouly selected.
+
+        Args:
+            language (str): The name of the language to select.
+
+        Raises:
+            NoSuchElementException: If the language button or target language is not found.
+        """
+        driver = self.driver
+
+        # get the current text of the editor
+        editor_text = driver.find_element(*EDITOR_TEXT_SELECTOR).text
+
+        # interact with the page to select desired language
+        driver.find_element(*LANGUAGE_BUTTON_SELECTOR).click()
+
+        driver.find_element(
+            TARGET_LANGUAGE_SELECTOR[0],
+            TARGET_LANGUAGE_SELECTOR[1].format(target_language=language),
+        ).click()
+
+        # wait for the text to have changed
+        WebDriverWait(driver, 5).until(
+            lambda driver: editor_text
+            not in driver.find_element(*EDITOR_TEXT_SELECTOR).text
+        )

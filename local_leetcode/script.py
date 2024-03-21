@@ -4,7 +4,7 @@ import argparse
 from urllib.parse import urlparse
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from page import LeetcodeProblem
+from page import LeetcodeProblemPage
 from writer import Writer
 
 
@@ -46,7 +46,7 @@ def scrape_problem_data(url: str) -> Dict:
     # chrome_options.add_argument("--headless") # triggers cloudflare human check
     with webdriver.Chrome(options=chrome_options) as browser:
         browser.implicitly_wait(5)
-        page = LeetcodeProblem(browser, url)
+        page = LeetcodeProblemPage(browser, url)
         page.load()
         return page.parse()
 
