@@ -6,7 +6,7 @@ The script takes two parameters positionally. Call the script with -h for more i
 
 Example Usage:
 ```
-python3 ./local_leetcode/script.py "https://leetcode.com/problems/count-elements-with-maximum-frequency/description" "~/Documents"
+python3 ./local_leetcode/script.py "https://leetcode.com/problems/count-elements-with-maximum-frequency/description" "/home/dylan/Documents"
 ```
 ## Output
 There are four files generated:
