@@ -12,7 +12,7 @@ class Writer:
         problem_number = self.page_data["number"]
         problem_name = self.page_data["name"]
         
-        dir_name = problem_number.ljust(4, '0') + "_" + problem_name.lower().replace(" ", "_")
+        dir_name = problem_number.rjust(4, '0') + "_" + problem_name.lower().replace(" ", "_")
         new_path = os.path.join(self.out_dir, dir_name)
         os.mkdir(new_path)
         return new_path
