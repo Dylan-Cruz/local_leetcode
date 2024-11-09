@@ -33,8 +33,7 @@ class LeetcodeProblemPage:
         WebDriverWait(self.driver, 3).until(
             EC.presence_of_element_located(
                 [
-                    By.CSS_SELECTOR,
-                    "div.text-title-large a",
+                    By.CSS_SELECTOR, "#editor div.monaco-scrollable-element"
                 ]
             )
         )
