@@ -18,7 +18,7 @@ LANGUAGE_BUTTON_SELECTOR = (
 
 TARGET_LANGUAGE_SELECTOR = (
     By.XPATH,
-    "//div[@id='editor']//div[contains(text(), '{target_language}')]",
+    "//div[contains(text(), 'Python3')]",
 )  # targets a button in the language selection pop over with the text of the target language. must call format passing the desired language
 
 
@@ -30,7 +30,7 @@ class LeetcodeProblemPage:
     def load(self) -> None:
         print(f"Loading problem with URL: {self.url}")
         self.driver.get(self.url)
-        WebDriverWait(self.driver, 3).until(
+        WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located(
                 [
                     By.CSS_SELECTOR, "#editor div.monaco-scrollable-element"
